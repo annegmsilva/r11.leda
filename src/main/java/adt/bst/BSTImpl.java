@@ -19,6 +19,8 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 
 	@Override
 	public int height() {
+		int result = -1;
+		return result;
 		// recursivamente, verifica o right e o left e soma o maior enre os dois (se for nil, sera -1)
 	}
 
@@ -28,13 +30,15 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 	}
 
 	private BSTNode<T> searchAux(BSTNode<T> node, T element) {
-		BSTNode<T> result = node;
+		BSTNode<T> result = new BSTNode<T>();
 		if (!node.getData().equals(element)) {
 			if (node.getData().compareTo(element) > 0) {  //elemento está à esquerda
 				result = searchAux((BSTNode<T>) node.getLeft(), element);
 			} else {
 				result = searchAux((BSTNode<T>) node.getRight(), element);
 			}
+		} else {
+			result = node;
 		}
 		return result;
 	}
@@ -106,16 +110,38 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 		return result;
 	}
 
+	private boolean contained(BSTNode<T> node, T element) {
+		boolean result = false;
+		if (!node.getData().equals(element)) {
+			if (node.getData().compareTo(element) > 0) {  //elemento está à esquerda
+				result = contained((BSTNode<T>) node.getLeft(), element);
+			} else {
+				result = contained((BSTNode<T>) node.getRight(), element);
+			}
+		} else {
+			result = true;
+		}
+		return result;
+	}
+
 	@Override
 	public BSTNode<T> sucessor(T element) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		BSTNode<T> result = null;
+		if (element != null && contained(root, element)) {
+			BSTNode<T> node = search(element);
+			if (node.getRight().getData() != null) {
+				result = minimumAux((BSTNode<T>) node.getRight());
+			} else {
+				BSTNode<T> aux = (BSTNode<T>) node.getParent();
+				while (aux.getData() != null && )
+			}
+		}
+		return result;
 	}
 
 	@Override
 	public BSTNode<T> predecessor(T element) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		
 	}
 
 	@Override
