@@ -1,5 +1,7 @@
 package adt.bst;
 
+import java.util.ArrayList;
+
 public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 
 	protected BSTNode<T> root;
@@ -19,9 +21,15 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 
 	@Override
 	public int height() {
+		return heightAux(root);
+	}
+
+	private int heightAux(BSTNode<T> node) {
 		int result = -1;
+		if (node != null) {
+			result = 1 + Math.max(heightAux((BSTNode<T>) node.getLeft()), heightAux((BSTNode<T>) node.getRight()));
+		}
 		return result;
-		// recursivamente, verifica o right e o left e soma o maior enre os dois (se for nil, sera -1)
 	}
 
 	@Override
@@ -133,7 +141,10 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 				result = minimumAux((BSTNode<T>) node.getRight());
 			} else {
 				BSTNode<T> aux = (BSTNode<T>) node.getParent();
-				while (aux.getData() != null && )
+				while (aux.getData() != null && element.compareTo(node.getData()) < 0) {
+					aux = (BSTNode<T>) aux.getParent();
+				}
+				result = aux;
 			}
 		}
 		return result;
@@ -141,31 +152,81 @@ public class BSTImpl<T extends Comparable<T>> implements BST<T> {
 
 	@Override
 	public BSTNode<T> predecessor(T element) {
-		
+		BSTNode<T> result = null;
+		if (element != null && contained(root, element)) {
+			BSTNode<T> node = search(element);
+			if (node.getLeft().getData() != null) {
+				result = maximumAux((BSTNode<T>) node.getLeft());
+			} else {
+				BSTNode<T> aux = (BSTNode<T>) node.getParent();
+				while (aux.getData() != null && element.compareTo(node.getData()) > 0) {
+					aux = (BSTNode<T>) aux.getParent();
+				}
+				result = aux;
+			}
+		}
+		return result;
 	}
 
 	@Override
 	public void remove(T element) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		BSTNode<T> node = search(element);
+		if (node.getData() != null) {
+			if (node.isLeaf()){
+				node = new BSTNode<T>();
+			} else if (!node.equals(root)) { // casos em que só tem um filho
+				if (node.getLeft() != null && node.getRight() == null) { // se o filho é o nó à esquerda
+					if (node.getLeft().getData() != null) {
+						// não terminei
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public T[] preOrder() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		return preOrderAux(root);
+	}
+
+	private T[] preOrderAux(BSTNode<T> node) {
+		ArrayList<T> result = new ArrayList<>();
+		if (node.getData() != null) {
+			result.add(node.getData());
+			preOrderAux((BSTNode<T>) node.getLeft());
+			preOrderAux((BSTNode<T>) node.getRight());
+		}
+		return (T[]) result.toArray();
 	}
 
 	@Override
 	public T[] order() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		return orderAux(root);
+	}
+
+	private T[] orderAux(BSTNode<T> node) {
+		ArrayList<T> result = new ArrayList<>();
+		if (node.getData() != null) {
+			orderAux((BSTNode<T>) node.getLeft());
+			result.add(node.getData());
+			orderAux((BSTNode<T>) node.getRight());
+		}
+		return (T[]) result.toArray();
 	}
 
 	@Override
 	public T[] postOrder() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+		return postOrderAux(root);
+	}
+
+	private T[] postOrderAux(BSTNode<T> node) {
+		ArrayList<T> result = new ArrayList<>();
+		if (node.getData() != null) {
+			preOrderAux((BSTNode<T>) node.getLeft());
+			preOrderAux((BSTNode<T>) node.getRight());
+			result.add(node.getData());
+		}
+		return (T[]) result.toArray();
 	}
 
 	/**
